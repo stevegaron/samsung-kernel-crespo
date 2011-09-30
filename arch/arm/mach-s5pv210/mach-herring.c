@@ -431,24 +431,24 @@ static struct s5p_media_device herring_media_devs[] = {
 static struct s5pv210_cpufreq_voltage smdkc110_cpufreq_volt[] = {
 	{
 		.freq	= 1000000,
-		.varm	= 1275000,
-		.vint	= 1100000,
+		.varm	= 1225000,
+		.vint	= 1075000,
 	}, {
 		.freq	=  800000,
-		.varm	= 1200000,
-		.vint	= 1100000,
+		.varm	= 1175000,
+		.vint	= 1075000,
 	}, {
 		.freq	=  400000,
-		.varm	= 1050000,
-		.vint	= 1100000,
+		.varm	= 1025000,
+		.vint	= 1075000,
 	}, {
 		.freq	=  200000,
-		.varm	=  950000,
-		.vint	= 1100000,
+		.varm	=  925000,
+		.vint	= 1075000,
 	}, {
 		.freq	=  100000,
-		.varm	=  950000,
-		.vint	= 1000000,
+		.varm	=  925000,
+		.vint	=  975000,
 	},
 };
 
@@ -726,7 +726,7 @@ static struct regulator_init_data herring_buck2_data = {
 		.valid_ops_mask	= REGULATOR_CHANGE_VOLTAGE |
 				  REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
-			.uV	= 1100000,
+			.uV	= 1075000,
 			.mode	= REGULATOR_MODE_NORMAL,
 			.disabled = 1,
 		},
