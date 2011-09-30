@@ -75,6 +75,10 @@ struct s5p_lcd{
 	struct dentry *debug_dir;
 };
 
+#ifdef CONFIG_SCREEN_DIMMER
+static struct s5p_lcd * screendimmer_lcd;
+#endif
+
 #ifdef CONFIG_FB_VOODOO
 struct s5p_lcd *lcd_;
 
@@ -173,10 +177,6 @@ static const u16 s6e63m0_SEQ_ETC_SETTING_SAMSUNG[] = {
 	0x029,
 	ENDDEF, 0x0000
 };
-#endif
-
-#ifdef CONFIG_SCREEN_DIMMER
-static struct s5p_lcd * screendimmer_lcd;
 #endif
 
 static u32 gamma_lookup(struct s5p_lcd *lcd, u8 brightness, u32 val, int c)
@@ -1191,6 +1191,12 @@ static int __devinit tl2796_probe(struct spi_device *spi)
 		debugfs_create_file("current_gamma", S_IRUGO,
 			lcd->debug_dir, lcd, &tl2796_current_gamma_fops);
 
+#ifdef CONFIG_SCREEN_DIMMER
+	screendimmer_lcd = lcd;
+	
+	register_screendimmer_implementation(&screendimmer_tl2796);
+#endif
+
 #ifdef CONFIG_FB_VOODOO
 	misc_register(&voodoo_color_device);
 	if (sysfs_create_group(&voodoo_color_device.this_device->kobj, &voodoo_color_group) < 0)
@@ -1202,14 +1208,7 @@ static int __devinit tl2796_probe(struct spi_device *spi)
 	// make a copy of the codec pointer
 	lcd_ = lcd;
 #endif
-
-#ifdef CONFIG_SCREEN_DIMMER
-	screendimmer_lcd = lcd;
-	
-	register_screendimmer_implementation(&screendimmer_tl2796);
-#endif
-
-	pr_info("tl2796_probe successfully probed\n");
+	pr_info("tl2796_probe successfully proved\n");
 
 	return 0;
 

@@ -21,6 +21,9 @@
 #include <mach/regs-clock.h>
 #include "wm8994_samsung.h"
 #include "../../../arch/arm/mach-s5pv210/herring.h"
+#ifdef CONFIG_SND_VOODOO
+#include "wm8994_voodoo.h"
+#endif
 
 #ifdef CONFIG_SND_VOODOO
 #include "wm8994_voodoo.h"
@@ -2602,6 +2605,10 @@ void wm8994_set_voicecall_common_setting(struct snd_soc_codec *codec)
 		wm8994_set_cdma_voicecall_common_setting(codec);
 	else
 		wm8994_set_gsm_voicecall_common_setting(codec);
+
+#ifdef CONFIG_SND_VOODOO_RECORD_PRESETS
+	voodoo_hook_record_main_mic();
+#endif
 }
 
 static void wm8994_set_cdma_voicecall_receiver(struct snd_soc_codec *codec)

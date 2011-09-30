@@ -41,6 +41,9 @@
 #include <mach/regs-clock.h>
 #include "wm8994_samsung.h"
 #include "../../../arch/arm/mach-s5pv210/herring.h"
+#ifdef CONFIG_SND_VOODOO
+#include "wm8994_voodoo.h"
+#endif
 
 #ifdef CONFIG_SND_VOODOO
 #include "wm8994_voodoo.h"
