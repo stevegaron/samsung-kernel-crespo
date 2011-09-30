@@ -25,10 +25,6 @@
 #include "wm8994_voodoo.h"
 #endif
 
-#ifdef CONFIG_SND_VOODOO
-#include "wm8994_voodoo.h"
-#endif
-
 /*
  * Debug Feature
  */

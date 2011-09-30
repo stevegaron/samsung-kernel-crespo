@@ -45,10 +45,6 @@
 #include "wm8994_voodoo.h"
 #endif
 
-#ifdef CONFIG_SND_VOODOO
-#include "wm8994_voodoo.h"
-#endif
-
 #define WM8994_VERSION "0.1"
 #define SUBJECT "wm8994_samsung.c"
 
