@@ -23,7 +23,6 @@
 
 #define PLL45XX_APLL_VAL_1100   ((1 << 31) | (275 << 16) | (6 << 8) | (1))
 #define PLL45XX_APLL_VAL_1000	((1 << 31) | (125 << 16) | (3 << 8) | (1))
-#define PLL45XX_APLL_VAL_940    ((1 << 31) | (235 << 16) | (6 << 8) | (1))
 #define PLL45XX_APLL_VAL_800	((1 << 31) | (100 << 16) | (3 << 8) | (1))
 
 enum pll45xx_type_t {
