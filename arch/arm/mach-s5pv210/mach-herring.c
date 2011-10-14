@@ -726,11 +726,7 @@ static struct regulator_init_data herring_buck2_data = {
 		.valid_ops_mask	= REGULATOR_CHANGE_VOLTAGE |
 				  REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
-<<<<<<< HEAD
 			.uV	= 1075000,
-=======
-			.uV	= 1250000,
->>>>>>> d7c8d76335418b48412704d6b2af637d679c7bff
 			.mode	= REGULATOR_MODE_NORMAL,
 			.disabled = 1,
 		},
