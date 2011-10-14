@@ -33,12 +33,7 @@
 						"cpufreq-core", msg)
 
 /* UV */
-<<<<<<< HEAD
 int exp_UV_mV[5] = { 1225000, 1175000, 1025000, 925000, 925000 };
-=======
-int exp_UV_mV[9] = { 1440000, 1390000, 1330000, 1290000, 1250000, 1200000,
-                     1050000, 950000, 950000};
->>>>>>> d7c8d76335418b48412704d6b2af637d679c7bff
 
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
@@ -651,15 +646,7 @@ static ssize_t show_scaling_setspeed(struct cpufreq_policy *policy, char *buf)
 /* sysfs interface for UV control */
 static ssize_t show_UV_mV_table(struct cpufreq_policy *policy, char *buf) {
 
-<<<<<<< HEAD
-	return sprintf(buf, "1000mhz: %d mV\n800mhz: %d mV\n400mhz: %d mV\n200mhz: %d mV\n100mhz: %d mV\n", exp_UV_mV[0]/1000, exp_UV_mV[1]/1000, exp_UV_mV[2]/1000, exp_UV_mV[3]/1000, exp_UV_mV[4]/1000);
-=======
-	return sprintf(buf, "1440mhz: %d mV\n1300mhz: %d mV\n1200mhz: %d mV\n1100mhz: %d mV\n1000mhz: %d mV\n800mhz: %d mV\n400mhz: %d mV\n200mhz: %d mV\n100mhz: %d mV\n",
-                        exp_UV_mV[0]/1000, exp_UV_mV[1]/1000, exp_UV_mV[2]/1000,
-                        exp_UV_mV[3]/1000, exp_UV_mV[4]/1000, exp_UV_mV[5]/1000,
-                        exp_UV_mV[6]/1000, exp_UV_mV[7]/1000,
-                        exp_UV_mV[8]/1000);
->>>>>>> d7c8d76335418b48412704d6b2af637d679c7bff
+	return sprintf(buf, "1100mhz: %d mV\n800mhz: %d mV\n400mhz: %d mV\n200mhz: %d mV\n100mhz: %d mV\n", exp_UV_mV[0]/1000, exp_UV_mV[1]/1000, exp_UV_mV[2]/1000, exp_UV_mV[3]/1000, exp_UV_mV[4]/1000);
 
 }
 
@@ -668,24 +655,13 @@ static ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 
 	unsigned int ret = -EINVAL;
 	int i = 0;
-<<<<<<< HEAD
+
 	ret = sscanf(buf, "%d %d %d %d %d", &exp_UV_mV[0], &exp_UV_mV[1], &exp_UV_mV[2], &exp_UV_mV[3], &exp_UV_mV[4]);
 	if(ret != 5) {
 		return -EINVAL;
 	}
 	else
 		for( i = 0; i < 5; i++ )
-=======
-	ret = sscanf(buf, "%d %d %d %d %d %d %d %d %d",
-                &exp_UV_mV[0], &exp_UV_mV[1], &exp_UV_mV[2],
-                &exp_UV_mV[3], &exp_UV_mV[4], &exp_UV_mV[5],
-                &exp_UV_mV[6], &exp_UV_mV[7], &exp_UV_mV[8]);
-	if(ret != 9) {
-		return -EINVAL;
-	}
-	else
-		for( i = 0; i < 9; i++ )
->>>>>>> d7c8d76335418b48412704d6b2af637d679c7bff
 		{
 		   exp_UV_mV[i] *= 1000;
 		}
