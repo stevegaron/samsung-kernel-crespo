@@ -29,6 +29,8 @@
  *
  */
 
+#define SEC_ADJUST_LMK
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
