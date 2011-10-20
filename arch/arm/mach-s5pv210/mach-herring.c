@@ -133,7 +133,6 @@ static int herring_notifier_call(struct notifier_block *this,
 					unsigned long code, void *_cmd)
 {
 	int mode = REBOOT_MODE_NONE;
-	unsigned int temp;
 
 	if ((code == SYS_RESTART) && _cmd) {
 		if (!strcmp((char *)_cmd, "recovery"))
@@ -2494,8 +2493,7 @@ static int s5ka3dfx_power_init(void)
 
 static int s5ka3dfx_power_on(void)
 {
-	int err = 0;
-	int result;
+	int err = 0, result = 0;
 
 	if (s5ka3dfx_power_init()) {
 		pr_err("Failed to get all regulator\n");
@@ -2890,7 +2888,7 @@ static struct attribute_group herring_properties_attr_group = {
 static void herring_virtual_keys_init(void)
 {
 	struct kobject *properties_kobj;
-	int ret;
+	int ret = 0;
 
 	properties_kobj = kobject_create_and_add("board_properties", NULL);
 	if (properties_kobj)
@@ -5538,7 +5536,7 @@ int s5pc110_version ;
 
 void _hw_version_check(void)
 {
-	void __iomem *phy_address ;
+	void __iomem *phy_address;
 	int temp;
 
 	phy_address = ioremap(0x40, 1);
