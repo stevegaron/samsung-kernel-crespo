@@ -666,7 +666,8 @@ static int have_callable_console(void)
 
 asmlinkage int printk(const char *fmt, ...)
 {
-	#if 0 //SpeedMod: Disable printk
+#ifdef CONFIG_DISABLE_PRINTK //SpeedMod: Disable printk
+#else
 	va_list args;
 	int r;
 
@@ -758,7 +759,8 @@ static inline void printk_delay(void)
 
 asmlinkage int vprintk(const char *fmt, va_list args)
 {
-	#if 0 //SpeedMod: Disable printk
+#ifdef CONFIG_DISABLE_PRINTK //SpeedMod: Disable printk
+#else
 	int printed_len = 0;
 	int current_log_level = default_message_loglevel;
 	unsigned long flags;
