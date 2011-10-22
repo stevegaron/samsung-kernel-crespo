@@ -959,7 +959,7 @@ config PRINTK
 
 config DISABLE_PRINTK
 	default n
-	bool "Enable SpeedMod write to NULL"
+	bool "Enable SpeedMod write to NULL" if PRINTK
 	help
 	  This option leaves printk enabled but fakes write and always 
 	  return 0.
