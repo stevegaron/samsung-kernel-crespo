@@ -485,6 +485,7 @@ config TOUCH_WAKE
 
 config CM7_LED_NOTIFICATION
        bool "Support CM7 LED Notification"
+       depends on !TOUCH_WAKE && !SCREEN_DIMMER && !BLD && !KEYPAD_CYPRESS_TOUCH_USE_BLN
        default y
        help
          Say Y here to enable CM7 LED Notifications
