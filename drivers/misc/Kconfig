@@ -467,20 +467,26 @@ config PN544
 
 config BLD
        bool "BLD support for backlight dimmer"
-       default y
+       default n
        help
          Say Y here to enable the backlight dimmer
 
 config SCREEN_DIMMER
        bool "Support for screen dimmer"
-       default y
+       default n
        help
          Say Y here to enable the screen dimmer
 
 config TOUCH_WAKE
        bool "Support for touch wake"
-       default y
+       default n
        help
          Say Y here to enable touch wake
+
+config CM7_LED_NOTIFICATION
+       bool "Support CM7 LED Notification"
+       default y
+       help
+         Say Y here to enable CM7 LED Notifications
 
 endif # MISC_DEVICES
