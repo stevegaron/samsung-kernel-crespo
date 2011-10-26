@@ -201,6 +201,7 @@ static irqreturn_t touchkey_interrupt_thread(int irq, void *touchkey_devdata)
 			goto err;
 		}
 
+#if defined(CONFIG_TOUCH_WAKE) || defined(CONFIG_SCREEN_DIMMER) || defined(CONFIG_BLD)
 #ifdef CONFIG_SCREEN_DIMMER
 #ifdef CONFIG_TOUCH_WAKE
 		if (!device_is_suspended() && !screen_is_dimmed())
@@ -218,7 +219,6 @@ static irqreturn_t touchkey_interrupt_thread(int irq, void *touchkey_devdata)
 					 !(data & UPDOWN_EVENT_MASK));
 		    }
 
-#if defined(CONFIG_TOUCH_WAKE) || defined(CONFIG_SCREEN_DIMMER) || defined(CONFIG_BLD)
 		if (!(data & UPDOWN_EVENT_MASK))
 		    {
 #ifdef CONFIG_BLD			
@@ -231,8 +231,13 @@ static irqreturn_t touchkey_interrupt_thread(int irq, void *touchkey_devdata)
 			touch_press();
 #endif
 		    }
+#else
+		input_report_key(devdata->input_dev,
+		 	devdata->pdata->keycode[scancode],
+		 	!(data & UPDOWN_EVENT_MASK));
 #endif
 	} else {
+#if defined(CONFIG_TOUCH_WAKE) || defined(CONFIG_SCREEN_DIMMER) || defined(CONFIG_BLD)
 #ifdef CONFIG_SCREEN_DIMMER
 #ifdef CONFIG_TOUCH_WAKE
 		if (!device_is_suspended() && !screen_is_dimmed())
@@ -251,7 +256,6 @@ static irqreturn_t touchkey_interrupt_thread(int irq, void *touchkey_devdata)
 					     !!(data & (1U << i)));
 		    }
 
-#if defined(CONFIG_TOUCH_WAKE) || defined(CONFIG_SCREEN_DIMMER) || defined(CONFIG_BLD)
 		for (i = 0; i < devdata->pdata->keycode_cnt; i++)
 		    {
 			if(!!(data & (1U << i)))
@@ -268,6 +272,13 @@ static irqreturn_t touchkey_interrupt_thread(int irq, void *touchkey_devdata)
 				break;
 			    }
 		    }
+#else
+		for (i = 0; i < devdata->pdata->keycode_cnt; i++)
+		{
+			input_report_key(devdata->input_dev,
+			 	 devdata->pdata->keycode[i],
+			 	 !!(data & (1U << i)));
+		}
 #endif
 	}
 

@@ -1996,6 +1996,7 @@ static void touch_keypad_onoff(int onoff)
 		msleep(50);
 }
 
+#ifdef CONFIG_BLN
 static void touch_keypad_gpio_sleep(int onoff){
 	if(onoff == TOUCHKEY_ON){
 		/*
@@ -2013,6 +2014,7 @@ static void touch_keypad_gpio_sleep(int onoff){
 	}
 
 }
+#endif
 
 static const int touch_keypad_code[] = {
 	KEY_MENU,
@@ -2025,7 +2027,9 @@ static struct touchkey_platform_data touchkey_data = {
 	.keycode_cnt = ARRAY_SIZE(touch_keypad_code),
 	.keycode = touch_keypad_code,
 	.touchkey_onoff = touch_keypad_onoff,
+#ifdef CONFIG_BLN
 	.touchkey_sleep_onoff = touch_keypad_gpio_sleep,
+#endif
 	.fw_name = "cypress-touchkey.bin",
 	.scl_pin = _3_TOUCH_SCL_28V,
 	.sda_pin = _3_TOUCH_SDA_28V,
