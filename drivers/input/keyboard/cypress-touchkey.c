@@ -249,6 +249,9 @@ static int recovery_routine(struct cypress_touchkey_devdata *devdata)
 	devdata->pdata->touchkey_onoff(TOUCHKEY_OFF);
 	dev_err(&devdata->client->dev, "%s: touchkey died\n", __func__);
 out:
+#ifdef CONFIG_CM7_LED_NOTIFICATION
+	up(&enable_sem);
+#endif
 	return ret;
 }
 
