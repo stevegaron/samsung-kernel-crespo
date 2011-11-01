@@ -1265,12 +1265,14 @@ static int __init touchkey_init(void)
 		pr_err("%s: cypress touch keypad registration failed. (%d)\n",
 				__func__, ret);
 
+#ifdef CONFIG_CM7_LED_NOTIFICATION
 	/* Initialize wake locks */
 	wake_lock_init(&sBlinkWakeLock, WAKE_LOCK_SUSPEND, "blink_wake");
 
 	setup_timer(&bl_timer, bl_timer_callback, 0);
 	setup_timer(&blink_timer, blink_timer_callback, 0);
 	mod_timer(&blink_timer, jiffies + msecs_to_jiffies(iTimeBlink));
+#endif
 
 	return ret;
 }
