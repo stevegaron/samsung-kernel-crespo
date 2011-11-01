@@ -1,7 +1,11 @@
 #
-# Automatically generated make config: don't edit
-# Linux kernel version: 2.6.35.14
-# Wed Oct 26 14:35:07 2011
+# Default Herring config
+#
+# CM7 Led Notification 
+# Dealine IO
+# DeepIdle 
+# Lazy Governor
+# No Kernel Debug
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
