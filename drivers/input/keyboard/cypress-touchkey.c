@@ -75,7 +75,7 @@ static unsigned int iTimeBlink = 200;
 static unsigned int iTimesOn = 1;
 static unsigned int iTimesTotal = 10;
 static unsigned int iBlinkOnOffCounts = 0;
-static iBlinkMilisecondsTimeout = 1500;
+static unsigned int iBlinkMilisecondsTimeout = 1500;
 static DECLARE_MUTEX(enable_sem);
 static DECLARE_MUTEX(i2c_sem);
 static uint32_t blink_count;
@@ -576,7 +576,7 @@ static ssize_t led_status_write(struct device *dev, struct device_attribute *att
 	printk(KERN_DEBUG "%s: notification LED ENTER\n", __FUNCTION__);
 	if (sscanf(buf, "%u\n", &data)) {
 		if (data == 0 && bl_on == 0)
-			return;
+			return 0;
  	 	if (data >= 1) {
 			all_keys_up(bl_devdata);
 			// printk(KERN_DEBUG "%s: notification led enabled\n", __FUNCTION__);
@@ -663,14 +663,14 @@ static ssize_t led_version_read(struct device * dev, struct device_attribute * a
 }
 
 static DEVICE_ATTR(led, S_IRUGO | S_IWUGO , led_status_read, led_status_write);
-static DEVICE_ATTR(timeout, S_IRUGO | S_IWUGO , led_timeout_read, led_timeout_write);
+static DEVICE_ATTR(bl_timeout, S_IRUGO | S_IWUGO , led_timeout_read, led_timeout_write);
 static DEVICE_ATTR(blinktimeout, S_IRUGO | S_IWUGO , led_blinktimeout_read, led_blinktimeout_write);
 static DEVICE_ATTR(blink, S_IRUGO | S_IWUGO , led_blink_read, led_blink_write);
 static DEVICE_ATTR(version, S_IRUGO , led_version_read, NULL);
 
 static struct attribute *bl_led_attributes[] = {
 	&dev_attr_led.attr,
-	&dev_attr_timeout.attr,
+	&dev_attr_bl_timeout.attr,
 	&dev_attr_blinktimeout.attr,
 	&dev_attr_blink.attr,
  	&dev_attr_version.attr,
