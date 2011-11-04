@@ -490,4 +490,12 @@ config CM7_LED_NOTIFICATION
        help
          Say Y here to enable CM7 LED Notifications
 
+config WIRELESS_PMFAST
+       bool "Use PM_FAST flag as power management for wireless adapter"
+       default y
+       help
+         Say Y here to us PM_FAST for wireless power management. 
+	 Uses more power but it better at keeping connections.
+
+
 endif # MISC_DEVICES
