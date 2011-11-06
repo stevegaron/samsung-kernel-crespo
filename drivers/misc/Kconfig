@@ -497,5 +497,10 @@ config WIRELESS_PMFAST
          Say Y here to us PM_FAST for wireless power management. 
 	 Uses more power but it better at keeping connections.
 
+config BLX
+       bool "Support for Battery Life eXtender"
+       default y
+       help
+         Say Y here to enable Battery Life eXtender
 
 endif # MISC_DEVICES
