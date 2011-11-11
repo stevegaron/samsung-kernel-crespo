@@ -366,6 +366,13 @@ static void report_input_data(struct mxt224_data *data)
 		touch_press();
 #endif
 
+#ifdef CONFIG_BLD
+		if (system_rev >= 0x30 && data->fingers[i].y > BLD_TOUCHKEYS_POSITION)
+		    {
+			touchkey_pressed();
+		    }
+#endif
+
 		if (data->fingers[i].z == 0)
 		    data->fingers[i].z = -1;
 	}
