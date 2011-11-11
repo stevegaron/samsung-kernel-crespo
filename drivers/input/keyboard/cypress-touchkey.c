@@ -74,7 +74,7 @@ static int iCountsBlink = 0;
 static unsigned int iTimeBlink = 200;
 static unsigned int iTimesOn = 1;
 static unsigned int iTimesTotal = 10;
-static unsigned int iBlinkOnOffCounts = 0;
+static unsigned int iBacklightTime = 0;
 static unsigned int iBlinkMilisecondsTimeout = 1500;
 static DECLARE_MUTEX(enable_sem);
 static DECLARE_MUTEX(i2c_sem);
@@ -380,8 +380,8 @@ static irqreturn_t touchkey_interrupt_thread(int irq, void *touchkey_devdata)
 
 	input_sync(devdata->input_dev);
 #ifdef CONFIG_CM7_LED_NOTIFICATION
-	if ( iBlinkOnOffCounts > 0 )
-		mod_timer(&bl_timer, jiffies + msecs_to_jiffies(iBlinkOnOffCounts));
+	if ( iBacklightTime > 0 )
+		mod_timer(&bl_timer, jiffies + msecs_to_jiffies(iBacklightTime));
 #endif
 err:
 	return IRQ_HANDLED;
@@ -557,8 +557,8 @@ static void cypress_touchkey_early_resume(struct early_suspend *h)
 
 	up(&enable_sem);
 
-	if ( iBlinkOnOffCounts > 0 )
- 		mod_timer(&bl_timer, jiffies + msecs_to_jiffies(iBlinkOnOffCounts));
+	if ( iBacklightTime > 0 )
+ 		mod_timer(&bl_timer, jiffies + msecs_to_jiffies(iBacklightTime));
 #endif
 #endif
 }
@@ -608,7 +608,7 @@ static ssize_t led_status_write(struct device *dev, struct device_attribute *att
 static ssize_t led_timeout_read(struct device *dev, struct device_attribute *attr, char *buf) {
 	unsigned int iSeconds;
 	
-	iSeconds = iBlinkOnOffCounts / 1000;
+	iSeconds = iBacklightTime / 1000;
 	return sprintf(buf,"%u\n", iSeconds);
 }
 	
@@ -617,7 +617,7 @@ static ssize_t led_timeout_write(struct device *dev, struct device_attribute *at
 	unsigned int data;
 
 	if (sscanf(buf, "%u\n", &data)) {
-		iBlinkOnOffCounts = data * 1000;
+		iBacklightTime = data * 1000;
 	}
 	return size;
 }
