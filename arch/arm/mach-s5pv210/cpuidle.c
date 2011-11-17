@@ -204,22 +204,50 @@ static int check_rtcint(void)
 #define GPIO_PUD_PDN_OFFSET	0x14
 #define GPIO_PUD_OFFSET		0x08
 
+static unsigned int pud_pdn[(S5PV210_MP28_BASE - S5PV210_GPA0_BASE) / GPIO_OFFSET + 1];
+
 static void s5p_gpio_pdn_conf(void)
 {
 	void __iomem *gpio_base = S5PV210_GPA0_BASE;
 	unsigned int val;
+	int i = 0;
 
 	do {
 		/* Keep the previous state in didle mode */
 		__raw_writel(0xffff, gpio_base + GPIO_CON_PDN_OFFSET);
 
+		/* Save power down pull up-down state */
+		pud_pdn[i] = __raw_readl(gpio_base + GPIO_PUD_PDN_OFFSET);
 		/* Pull up-down state in didle is same as normal */
 		val = __raw_readl(gpio_base + GPIO_PUD_OFFSET);
 		__raw_writel(val, gpio_base + GPIO_PUD_PDN_OFFSET);
 
 		gpio_base += GPIO_OFFSET;
+		i++;
 
 	} while (gpio_base <= S5PV210_MP28_BASE);
+
+	return;
+}
+
+static void s5p_gpio_restore_conf(void)
+{
+	void __iomem *gpio_base = S5PV210_GPA0_BASE;
+	int i = 0;
+
+	do {
+		/* Keep the previous state in didle mode */
+		__raw_writel(0xffff, gpio_base + GPIO_CON_PDN_OFFSET);
+
+		/* Restore power down pull up-down state */
+		__raw_writel(pud_pdn[i], gpio_base + GPIO_PUD_PDN_OFFSET);
+
+		gpio_base += GPIO_OFFSET;
+		i++;
+
+	} while (gpio_base <= S5PV210_MP28_BASE);
+
+	return;
 }
 
 static void s5p_enter_didle(bool top_on)
@@ -347,6 +375,11 @@ skipped_didle:
 	    __raw_writel(tmp, S5P_OTHERS);
 	}
 
+	if (!top_on) {
+	    /* Restore GPIO Power Down Configuration */
+	    s5p_gpio_restore_conf();
+	}
+
 	__raw_writel(vic_regs[0], S5P_VIC0REG(VIC_INT_ENABLE));
 	__raw_writel(vic_regs[1], S5P_VIC1REG(VIC_INT_ENABLE));
 	__raw_writel(vic_regs[2], S5P_VIC2REG(VIC_INT_ENABLE));
@@ -385,12 +418,12 @@ static int s5p_enter_idle_state(struct cpuidle_device *dev,
 
 #ifdef CONFIG_CPU_DIDLE
 #ifdef CONFIG_S5P_INTERNAL_DMA
-	if (!deepidle_is_enabled() || check_power_clock_gating() || suspend_ongoing() || loop_sdmmc_check() || check_usbotg_op() || check_rtcint() || check_idmapos()) {
+	if (!deepidle_is_enabled() || check_power_clock_gating() || suspend_ongoing() || check_usbotg_op() || check_rtcint() || check_idmapos()) {
 #else
-	if (!deepidle_is_enabled() || check_power_clock_gating() || suspend_ongoing() || loop_sdmmc_check() || check_usbotg_op() || check_rtcint()) {
+	if (!deepidle_is_enabled() || check_power_clock_gating() || suspend_ongoing() || check_usbotg_op() || check_rtcint()) {
 #endif
 	    s5p_enter_idle();
-	} else if (bt_is_running() || gps_is_running() || vibrator_is_running()) {
+	} else if (loop_sdmmc_check() || bt_is_running() || gps_is_running() || vibrator_is_running()) {
 	    s5p_enter_didle(true);
 	    idle_state = 1;
 	} else {
