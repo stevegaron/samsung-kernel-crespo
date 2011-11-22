@@ -73,6 +73,7 @@ struct mxt224_data {
 	struct input_dev *input_dev;
 	struct early_suspend early_suspend;
 	u32 finger_mask;
+	u32 touch_mask;
 	int gpio_read_done;
 	struct object_t *objects;
 	u8 objects_len;
@@ -321,7 +322,7 @@ err:
 
 static void report_input_data(struct mxt224_data *data)
 {
-	int i;
+	int i, iter = 0;
 
 	for (i = 0; i < data->num_fingers; i++) {
 		if (data->fingers[i].z == -1)
@@ -373,12 +374,23 @@ static void report_input_data(struct mxt224_data *data)
 		    }
 #endif
 
-		if (data->fingers[i].z == 0)
-		    data->fingers[i].z = -1;
+		if (data->fingers[i].z == 0) {
+			data->fingers[i].z = -1;
+			data->touch_mask &= ~(1U << i);
+		}
 	}
-	data->finger_mask = 0;
+
+	if (iter == 0)
+	    input_mt_sync(data->input_dev);
 
 	input_sync(data->input_dev);
+
+    if (iter && data->touch_mask == 0) {
+        input_mt_sync(data->input_dev);
+        input_sync(data->input_dev);
+    }
+
+	data->finger_mask = 0;
 }
 
 static irqreturn_t mxt224_irq_thread(int irq, void *ptr)
@@ -401,9 +413,10 @@ static irqreturn_t mxt224_irq_thread(int irq, void *ptr)
 			report_input_data(data);
 
 		if (msg[1] & RELEASE_MSG_MASK) {
-			data->fingers[id].z = 0;
+			data->fingers[id].z = -1;
 			data->fingers[id].w = msg[5];
 			data->finger_mask |= 1U << id;
+			data->touch_mask &= ~(1U << id);
 		} else if ((msg[1] & DETECT_MSG_MASK) && (msg[1] &
 				(PRESS_MSG_MASK | MOVE_MSG_MASK))) {
 			data->fingers[id].z = msg[6];
@@ -413,6 +426,7 @@ static irqreturn_t mxt224_irq_thread(int irq, void *ptr)
 			data->fingers[id].y = ((msg[3] << 4) |
 					(msg[4] & 0xF)) >> data->y_dropbits;
 			data->finger_mask |= 1U << id;
+			data->touch_mask |= 1U << id;
 		} else if ((msg[1] & SUPPRESS_MSG_MASK) &&
 			   (data->fingers[id].z != -1)) {
 			data->fingers[id].z = 0;
@@ -445,9 +459,12 @@ static int mxt224_internal_suspend(struct mxt224_data *data)
 	for (i = 0; i < data->num_fingers; i++) {
 		if (data->fingers[i].z == -1)
 			continue;
-		data->fingers[i].z = 0;
+		data->fingers[i].z = -1;
 	}
-	report_input_data(data);
+	data->touch_mask = 0;
+	data->finger_mask = 0;
+	input_mt_sync(data->input_dev);
+	input_sync(data->input_dev);
 
 	data->power_off();
 
