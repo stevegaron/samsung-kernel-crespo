@@ -1936,6 +1936,15 @@ dhd_open(struct net_device *net)
 	uint32 toe_ol;
 #endif
 	int ifidx;
+	int32 ret = 0;
+	dhd_os_wake_lock(&dhd->pub);
+	/* Update FW path if it was changed */
+	if ((firmware_path != NULL) && (firmware_path[0] != '\0')) {
+	    if (firmware_path[strlen(firmware_path)-1] == '\n')
+	        firmware_path[strlen(firmware_path)-1] = '\0';
+	    strcpy(fw_path, firmware_path);
+	    firmware_path[0] = '\0';
+    }
 
 	/*  Force start if ifconfig_up gets called before START command */
 	wl_control_wl_start(net);
@@ -1948,7 +1957,8 @@ dhd_open(struct net_device *net)
 
 	if ((dhd->iflist[ifidx]) && (dhd->iflist[ifidx]->state == WLC_E_IF_DEL)) {
 		DHD_ERROR(("%s: Error: called when IF already deleted\n", __FUNCTION__));
-		return -1;
+		ret = -1;
+        goto exit;
 	}
 
 	if (ifidx == 0) { /* do it only for primary eth0 */
@@ -1970,7 +1980,8 @@ dhd_open(struct net_device *net)
 	dhd->pub.up = 1;
 
 	OLD_MOD_INC_USE_COUNT;
-	return 0;
+exit:
+    return ret;
 }
 
 osl_t *
