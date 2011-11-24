@@ -31,7 +31,6 @@
 
 /* number of tx requests to allocate */
 #define TX_REQ_MAX 4
-#define RX_REQ_MAX 4
 
 static const char adb_shortname[] = "android_adb";
 
@@ -51,14 +50,11 @@ struct adb_dev {
 	atomic_t open_excl;
 
 	struct list_head tx_idle;
-	struct list_head rx_idle;
-	struct list_head rx_done;
 
 	wait_queue_head_t read_wq;
 	wait_queue_head_t write_wq;
 	struct usb_request *rx_req;
-	unsigned char *read_buf;
-	unsigned read_count;
+	int rx_done;
 };
 
 static struct usb_interface_descriptor adb_interface_desc = {
@@ -208,12 +204,9 @@ static void adb_complete_out(struct usb_ep *ep, struct usb_request *req)
 {
 	struct adb_dev *dev = _adb_dev;
 
-	if (req->status != 0){
+	dev->rx_done = 1;
+	if (req->status != 0)
 		dev->error = 1;
-		req_put(dev, &dev->rx_idle, req);
-	}else{
-		req_put(dev, &dev->rx_done, req);
-	}
 
 	wake_up(&dev->read_wq);
 }
@@ -235,6 +228,7 @@ static int adb_create_bulk_endpoints(struct adb_dev *dev,
 		return -ENODEV;
 	}
 	DBG(cdev, "usb_ep_autoconfig for ep_in got %s\n", ep->name);
+	ep->driver_data = dev;		/* claim the endpoint */
 	dev->ep_in = ep;
 
 	ep = usb_ep_autoconfig(cdev->gadget, out_desc);
@@ -243,6 +237,7 @@ static int adb_create_bulk_endpoints(struct adb_dev *dev,
 		return -ENODEV;
 	}
 	DBG(cdev, "usb_ep_autoconfig for adb ep_out got %s\n", ep->name);
+	ep->driver_data = dev;		/* claim the endpoint */
 	dev->ep_out = ep;
 
 	/* now allocate requests for our endpoints */
@@ -295,15 +290,10 @@ static ssize_t adb_read(struct file *fp, char __user *buf,
 			return ret;
 		}
 	}
-	while (count > 0) {
-        	if (dev->error) {
-                	DBG(cdev, "adb_read dev->error\n");
-                	r = -EIO;
-                       	break;
-               	}
-
-               /* if we have idle read requests, get them queued */
-      		while ((req = req_get(dev, &dev->rx_idle))) {
+	if (dev->error) {
+		r = -EIO;
+		goto done;
+	}
 
 requeue_req:
 	/* queue a request */
@@ -499,6 +489,7 @@ adb_function_unbind(struct usb_configuration *c, struct usb_function *f)
 	struct adb_dev	*dev = func_to_adb(f);
 	struct usb_request *req;
 
+
 	dev->online = 0;
 	dev->error = 1;
 
@@ -591,8 +582,6 @@ static int adb_setup(void)
 	atomic_set(&dev->read_excl, 0);
 	atomic_set(&dev->write_excl, 0);
 
-	INIT_LIST_HEAD(&dev->rx_idle);
-	INIT_LIST_HEAD(&dev->rx_done);
 	INIT_LIST_HEAD(&dev->tx_idle);
 
 	_adb_dev = dev;
