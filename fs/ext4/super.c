@@ -992,8 +992,9 @@ static int ext4_show_options(struct seq_file *seq, struct vfsmount *vfs)
 	 * let's always display its mount state so it's clear what its
 	 * status is.
 	 */
-	seq_puts(seq, ",barrier=");
-	seq_puts(seq, test_opt(sb, BARRIER) ? "1" : "0");
+	seq_puts(seq, ",barrier=0");
+	//seq_puts(seq, ",barrier=");
+	//seq_puts(seq, test_opt(sb, BARRIER) ? "1" : "0");
 	if (test_opt(sb, JOURNAL_ASYNC_COMMIT))
 		seq_puts(seq, ",journal_async_commit");
 	else if (test_opt(sb, JOURNAL_CHECKSUM))
@@ -1024,8 +1025,8 @@ static int ext4_show_options(struct seq_file *seq, struct vfsmount *vfs)
 	if (test_opt(sb, DATA_ERR_ABORT))
 		seq_puts(seq, ",data_err=abort");
 
-	if (test_opt(sb, NO_AUTO_DA_ALLOC))
-		seq_puts(seq, ",noauto_da_alloc");
+	//if (test_opt(sb, NO_AUTO_DA_ALLOC))
+	seq_puts(seq, ",noauto_da_alloc");
 
 	if (test_opt(sb, DISCARD) && !(def_mount_opts & EXT4_DEFM_DISCARD))
 		seq_puts(seq, ",discard");
@@ -1039,6 +1040,8 @@ static int ext4_show_options(struct seq_file *seq, struct vfsmount *vfs)
 	if (test_opt(sb, BLOCK_VALIDITY) &&
 	    !(def_mount_opts & EXT4_DEFM_BLOCK_VALIDITY))
 		seq_puts(seq, ",block_validity");
+
+	seq_puts(seq, ",nobh");
 
 	ext4_show_quota_options(seq, sb);
 
