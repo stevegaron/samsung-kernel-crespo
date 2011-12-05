@@ -839,16 +839,11 @@ CONFIG_NL80211_TESTMODE=y
 # CONFIG_CFG80211_DEVELOPER_WARNINGS is not set
 # CONFIG_CFG80211_REG_DEBUG is not set
 CONFIG_CFG80211_DEFAULT_PS=y
-# CONFIG_CFG80211_DEBUGFS is not set
 # CONFIG_CFG80211_INTERNAL_REGDB is not set
 # CONFIG_CFG80211_WEXT is not set
 # CONFIG_LIB80211 is not set
 CONFIG_CFG80211_ALLOW_RECONNECT=y
 # CONFIG_MAC80211 is not set
-
-#
-# CFG80211 needs to be enabled for MAC80211
-#
 
 #
 # Some wireless drivers require a rate control algorithm
@@ -958,6 +953,12 @@ CONFIG_MTD_ONENAND_SAMSUNG=y
 # LPDDR flash memory drivers
 #
 # CONFIG_MTD_LPDDR is not set
+
+#
+# UBI - Unsorted block images
+#
+# CONFIG_MTD_UBI is not set
+# CONFIG_PARPORT is not set
 CONFIG_BLK_DEV=y
 # CONFIG_BLK_DEV_COW_COMMON is not set
 CONFIG_BLK_DEV_LOOP=y
@@ -1083,6 +1084,10 @@ CONFIG_BCMDHD=y
 CONFIG_BCMDHD_FW_PATH="/vendor/firmware/fw_bcmdhd.bin"
 CONFIG_BCMDHD_NVRAM_PATH="/vendor/firmware/nvram_net.txt"
 # CONFIG_HOSTAP is not set
+# CONFIG_ATH_COMMON is not set
+# CONFIG_IWM is not set
+# CONFIG_LIBERTAS is not set
+# CONFIG_MWIFIEX is not set
 
 #
 # WiMAX Wireless Broadband devices
